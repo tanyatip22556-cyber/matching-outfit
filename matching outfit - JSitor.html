@@ -1,0 +1,302 @@
+<!doctype html><html><head></head><body><!DOCTYPE html>
+<html lang="th">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>matching outfit</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			font-family: 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background-color: #f7f9fc;
+			color: #333;
+			padding: 15px;
+			max-width: 500px;
+			margin: 0 auto;
+		}
+
+		header {
+			text-align: center;
+			padding: 15px 0;
+		}
+
+		header h1 {
+			color: #2c3e50;
+			font-size: 1.6rem;
+			letter-spacing: 0.5px;
+		}
+
+		header p {
+			color: #7f8c8d;
+			font-size: 0.85rem;
+			margin-top: 4px;
+		}
+
+		.card {
+			background: white;
+			border-radius: 16px;
+			padding: 18px;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+		}
+
+		.card h2 {
+			font-size: 1.1rem;
+			margin-bottom: 12px;
+			color: #34495e;
+		}
+
+		.form-group {
+			margin-bottom: 12px;
+		}
+
+		label {
+			display: block;
+			font-size: 0.85rem;
+			margin-bottom: 4px;
+			font-weight: 600;
+		}
+
+		select,
+		input[type="file"] {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			font-size: 0.9rem;
+			background: #fafafa;
+		}
+
+		.btn {
+			width: 100%;
+			background: #4a90e2;
+			color: white;
+			border: none;
+			padding: 12px;
+			border-radius: 10px;
+			font-size: 0.95rem;
+			font-weight: bold;
+			cursor: pointer;
+			transition: 0.2s;
+		}
+
+		.btn:active {
+			transform: scale(0.98);
+		}
+
+		.btn-match {
+			background: #2ecc71;
+			margin-top: 5px;
+		}
+
+		.wardrobe-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			margin-top: 10px;
+		}
+
+		.item-card {
+			background: #f8f9fa;
+			border-radius: 8px;
+			overflow: hidden;
+			text-align: center;
+			padding-bottom: 6px;
+			font-size: 0.75rem;
+			border: 1px solid #eee;
+		}
+
+		.item-card img {
+			width: 100%;
+			height: 80px;
+			object-fit: cover;
+		}
+
+		.match-result {
+			text-align: center;
+		}
+
+		.match-display {
+			display: flex;
+			justify-content: space-around;
+			margin: 15px 0;
+		}
+
+		.match-display img {
+			width: 80px;
+			height: 80px;
+			object-fit: cover;
+			border-radius: 10px;
+			border: 2px solid #4a90e2;
+		}
+
+		.advice-box {
+			background: #eef6ff;
+			border-left: 4px solid #4a90e2;
+			padding: 12px;
+			border-radius: 6px;
+			text-align: left;
+			font-size: 0.85rem;
+			line-height: 1.4;
+			color: #2c3e50;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<h1>👗 matching outfit</h1>
+		<p>สแกนเสื้อผ้าในตู้ แล้วจับคู่ชุดให้อัตโนมัติ</p>
+	</header>
+
+	<!-- ส่วนถ่ายภาพ/อัปโหลด -->
+	<div class="card">
+		<h2>📷 เพิ่มเสื้อผ้าของคุณ</h2>
+		<div class="form-group">
+			<label>ถ่ายรูปเสื้อผ้า / เลือกรูปภาพ</label>
+			<input type="file" id="imageInput" accept="image/*" capture="environment">
+        </div>
+			<div class="form-group">
+				<label>ประเภทเสื้อผ้า</label>
+				<select id="categorySelect">
+                <option value="top">เสื้อ (Top)</option>
+                <option value="bottom">กางเกง / กระโปรง (Bottom)</option>
+                <option value="shoes">รองเท้า (Shoes)</option>
+            </select>
+			</div>
+			<div class="form-group">
+				<label>โทนสีหลัก</label>
+				<select id="colorSelect">
+                <option value="neutral">โทนสุภาพ (ขาว/ดำ/เทา/เบจ)</option>
+                <option value="warm">โทนร้อน (แดง/ส้ม/เหลือง/น้ำตาล)</option>
+                <option value="cool">โทนเย็น (น้ำเงิน/เขียว/ม่วง)</option>
+            </select>
+			</div>
+			<button class="btn" onclick="addItem()">+ บันทึกเข้าตู้เสื้อผ้า</button>
+		</div>
+
+		<!-- ปุ่มแมตช์ชุด -->
+		<button class="btn btn-match" onclick="matchOutfit()">✨ แมตช์ชุดสไตล์วันนี้!</button>
+
+		<!-- ผลลัพธ์การแมตช์ -->
+		<div class="card" style="margin-top: 20px;">
+			<h2>✨ ชุดที่สแกนแล้วแมตช์ได้</h2>
+			<div class="match-result">
+				<div class="match-display" id="matchDisplay">
+					<p style="color: #888; font-size: 0.85rem;">กดปุ่มด้านบนเพื่อสแกนจับคู่ชุด</p>
+				</div>
+				<div class="advice-box" id="adviceBox">
+					📌 <b>คำแนะนำสไตล์:</b> อัปโหลดรูปเสื้อผ้าที่มีอย่างน้อย 1 เสื้อ และ 1 กางเกง/กระโปรง
+					เพื่อเริ่มสแกนความเข้ากันได้
+				</div>
+			</div>
+		</div>
+
+		<!-- ตู้เสื้อผ้าทั้งหมด -->
+		<div class="card">
+			<h2>🧺 ตู้เสื้อผ้าของคุณ (<span id="itemCount">0</span>)</h2>
+			<div class="wardrobe-grid" id="wardrobeGrid"></div>
+		</div>
+
+		<script>
+			const wardrobe = [];
+
+        function addItem() {
+            const fileInput = document.getElementById('imageInput');
+            const category = document.getElementById('categorySelect').value;
+            const color = document.getElementById('colorSelect').value;
+
+            if (fileInput.files.length === 0) {
+                alert('กรุณาถ่ายรูปหรือเลือกรูปภาพเสื้อผ้าก่อนครับ');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const item = {
+                    id: Date.now(),
+                    image: e.target.result,
+                    category: category,
+                    color: color
+                };
+
+                wardrobe.push(item);
+                renderWardrobe();
+                fileInput.value = '';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function renderWardrobe() {
+            const grid = document.getElementById('wardrobeGrid');
+            const count = document.getElementById('itemCount');
+            grid.innerHTML = '';
+            count.innerText = wardrobe.length;
+
+            wardrobe.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                const catName = item.category === 'top' ? 'เสื้อ' : (item.category === 'bottom' ? 'กางเกง' : 'รองเท้า');
+                div.innerHTML = `
+                    <img src="${item.image}">
+                    <div style="padding-top: 4px;"><b>${catName}</b></div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function matchOutfit() {
+            const tops = wardrobe.filter(i => i.category === 'top');
+            const bottoms = wardrobe.filter(i => i.category === 'bottom');
+            const shoes = wardrobe.filter(i => i.category === 'shoes');
+
+            const matchDisplay = document.getElementById('matchDisplay');
+            const adviceBox = document.getElementById('adviceBox');
+
+            if (tops.length === 0 || bottoms.length === 0) {
+                adviceBox.innerHTML = '⚠️ <b>ชุดยังไม่ครบ:</b> คุณยังขาดเสื้อหรือกางเกง/กระโปรง ลองถ่ายรูปเพิ่มลงในตู้นะครับ!';
+                return;
+            }
+
+            // สุ่มแมตช์เสื้อผ้าที่มีอยู่
+            const randomTop = tops[Math.floor(Math.random() * tops.length)];
+            const randomBottom = bottoms[Math.floor(Math.random() * bottoms.length)];
+            const randomShoe = shoes.length > 0 ? shoes[Math.floor(Math.random() * shoes.length)] : null;
+
+            let html = `<img src="${randomTop.image}"> <img src="${randomBottom.image}">`;
+            if (randomShoe) {
+                html += `<img src="${randomShoe.image}">`;
+            }
+            matchDisplay.innerHTML = html;
+
+            // ตรวจสอบและให้คำแนะนำแมตช์ชุด
+            let advice = '✅ <b>ลุคนี้ลงตัว:</b> ';
+            
+            if (randomTop.color === 'neutral' || randomBottom.color === 'neutral') {
+                advice += 'การจับคู่ชิ้นหลักสีโทนสุภาพ (ขาว/ดำ/เบจ) ช่วยให้ลุคดูเรียบหรู คลาสสิก แมตช์ง่ายและไม่แย่งซีนกันครับ';
+            } else if (randomTop.color === randomBottom.color) {
+                advice += 'แต่งชุดแบบโทนสีเดียวกัน (Monochrome) ให้ลุคที่ดูทันสมัยและช่วยให้ดูเพรียวขึ้น แนะนำหาเครื่องประดับสีตัดกันเพิ่มความเด่น';
+            } else {
+                advice += 'เป็นการจับคู่โทนสีที่น่าสนใจ! หากรู้สึกว่าสีตัดกันเกินไป สามารถใส่เสื้อคลุม หรือคาดสายเข็มขัดสีเบจ/ดำเพื่อเบรคโทนสีได้ครับ';
+            }
+
+            if (!randomShoe) {
+                advice += '<br><br>💡 <b>คำแนะนำเพิ่มเติม:</b> คุณยังไม่มีรองเท้าในระบบ แนะนำแมตช์กับ<b>รองเท้าผ้าใบสีขาว</b> หรือ <b>รองเท้าคัทชูสีดำ</b> เพื่อความเรียบง่ายและเข้าได้กับทุกชุด!';
+            }
+
+            adviceBox.innerHTML = advice;
+        }
+		</script>
+</body>
+
+</html></body><html>
